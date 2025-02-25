@@ -32,14 +32,48 @@
 # You will need to use log and -inf here. 
 # You can add any additional import statements you need here.
 from math import log, inf
-
-
+from pathlib import Path
 #######################
 # YOUR CODE GOES HERE #
-#######################
+import os
+import csv
 
+def score_unigrams(training_data, output_csv_path, test_sentences_path):
+    word_count = {}
+    total_words = 0
 
+    for filename in os.listdir(training_data):
+        if filename.endswith(".txt"):
+            with open(os.path.join(training_data, filename), 'r', encoding='utf-8') as file:
+                for line in file:
+                    words = line.lower().split()
+                    total_words += len(words)
+                    for word in words:
+                        word_count[word] = word_count.get(word, 0) + 1
 
+    output_dir = output_csv_path.parent
+    if output_dir and not output_dir.exists():
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+    with open(test_sentences_path, 'r', encoding='utf-8') as test_file, \
+         open(output_csv_path, 'w', newline='', encoding='utf-8') as output_csv:
+        
+        writer = csv.writer(output_csv)
+        writer.writerow(['sentence', 'unigram_prob'])
+
+        for line in test_file:
+            sentence = line.strip()
+            words = sentence.lower().split()
+            log_prob = 0
+
+            for word in words:
+                if word in word_count:
+                    word_prob = word_count[word] / total_words
+                    log_prob += log(word_prob)
+                else:
+                    log_prob = -inf
+                    break
+            writer.writerow([sentence, log_prob])
 # Do not modify the following line
 if __name__ == "__main__":
     # You can write code to test your function here
