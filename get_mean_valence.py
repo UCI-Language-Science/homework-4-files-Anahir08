@@ -35,13 +35,13 @@ def get_mean_valence (Path):
         modality = word_info['Modality']
         valence = float(word_info['Val'])
 
-    if modality not in modalities_val:
-        modalities_val[modality] = 0
-        modalities_count[modality] = 0
+        if modality not in modalities_val:
+            modalities_val[modality] = 0
+            modalities_count[modality] = 0
         modalities_val[modality] += valence
         modalities_count[modality] += 1
     for key in modalities_val: 
-        modalities_averages[key] = modalities_val[key]/modalities_count[key]
+        modalities_averages[key] = modalities_val[key] / modalities_count[key]
     return modalities_averages
 
 
